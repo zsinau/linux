@@ -1,0 +1,45 @@
+name: Build SM7150 Mainline Kernel
+on:
+  workflow_dispatch: # Pemicu manual dari tab Actions di GitHub
+
+jobs:
+  build-kernel:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Workflow
+        uses: actions/checkout@v4
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential flex libelf-dev libssl-dev git python3-minimal-
+
+      - name: Setup Toolchain (GCC AArch64)
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Clone SM7150 Linux Source
+        # Menggunakan depth 1 agar kloning puluhan GB kode kernel berjalan cepat
+        run: |
+          git clone --depth=1 github.com -b mainline kernel
+
+      - name: Compile Kernel
+        run: |
+          cd kernel
+          export ARCH=arm64
+          export CROSS_COMPILE=aarch64-linux-gnu-
+          
+          # 1. Regenerasi konfigurasi default untuk defconfig SM7150
+          # Catatan: Sesuaikan nama defconfig jika ada konfigurasi khusus perangkat di source mereka
+          make defconfig
+          
+          # 2. Proses Kompilasi biner kernel dan Device Tree (.dtb)
+          make -j$(nproc) Image dtbs
+
+      - name: Upload Kernel Image Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SM7150-Mainline-Image
+          path: |
+            kernel/arch/arm64/boot/Image
+            kernel/arch/arm64/boot/dts/qcom/*.dtb
