@@ -21,7 +21,7 @@ jobs:
       - name: Clone SM7150 Linux Source (Branch v7.1)
         # Menambahkan parameter -b v7.1 untuk mengambil branch spesifik Anda
         run: |
-          git clone --depth=1 -b v7.1 github.com kernel
+          git clone --depth=1 -b v7.1 https://github.com/zsinau/linux.git kernel
 
       - name: Compile Kernel
         run: |
