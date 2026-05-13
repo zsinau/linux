@@ -1,4 +1,4 @@
-name: Build SM7150 Mainline Kernel
+name: Build SM7150 Mainline Kernel v7.1
 on:
   workflow_dispatch: # Pemicu manual dari tab Actions di GitHub
 
@@ -18,10 +18,10 @@ jobs:
         run: |
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
-      - name: Clone SM7150 Linux Source
-        # Menggunakan URL repositori yang benar milik sm7150-mainline
+      - name: Clone SM7150 Linux Source (Branch v7.1)
+        # Menambahkan parameter -b v7.1 untuk mengambil branch spesifik Anda
         run: |
-          git clone --depth=1 github.com kernel
+          git clone --depth=1 -b v7.1 github.com kernel
 
       - name: Compile Kernel
         run: |
@@ -38,7 +38,7 @@ jobs:
       - name: Upload Kernel Image Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SM7150-Mainline-Image
+          name: SM7150-Mainline-Image-v7.1
           path: |
             kernel/arch/arm64/boot/Image
             kernel/arch/arm64/boot/dts/qcom/*.dtb
