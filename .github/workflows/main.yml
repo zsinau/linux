@@ -19,9 +19,9 @@ jobs:
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
       - name: Clone SM7150 Linux Source
-        # Menggunakan depth 1 agar kloning puluhan GB kode kernel berjalan cepat
+        # Menggunakan URL repositori yang benar milik sm7150-mainline
         run: |
-          git clone --depth=1 github.com -b mainline kernel
+          git clone --depth=1 github.com kernel
 
       - name: Compile Kernel
         run: |
@@ -29,11 +29,10 @@ jobs:
           export ARCH=arm64
           export CROSS_COMPILE=aarch64-linux-gnu-
           
-          # 1. Regenerasi konfigurasi default untuk defconfig SM7150
-          # Catatan: Sesuaikan nama defconfig jika ada konfigurasi khusus perangkat di source mereka
+          # Membuat basis konfigurasi dari defconfig generic arm64 mainline
           make defconfig
           
-          # 2. Proses Kompilasi biner kernel dan Device Tree (.dtb)
+          # Memulai proses kompilasi biner kernel utama dan seluruh file device tree (DTB)
           make -j$(nproc) Image dtbs
 
       - name: Upload Kernel Image Artifact
