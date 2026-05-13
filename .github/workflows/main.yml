@@ -1,6 +1,6 @@
 name: Build SM7150 Mainline Kernel v7.1
 on:
-  workflow_dispatch: # Pemicu manual dari tab Actions di GitHub
+  workflow_dispatch:
 
 jobs:
   build-kernel:
@@ -12,15 +12,15 @@ jobs:
       - name: Install Build Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y bc bison build-essential flex libelf-dev libssl-dev git python3-minimal-
+          sudo apt-get install -y bc bison build-essential flex libelf-dev libssl-dev git python3-minimal
 
       - name: Setup Toolchain (GCC AArch64)
         run: |
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
       - name: Clone SM7150 Linux Source (Branch v7.1)
-        # Menambahkan parameter -b v7.1 untuk mengambil branch spesifik Anda
         run: |
+          rm -rf kernel
           git clone --depth=1 -b v7.1 https://github.com/zsinau/linux.git kernel
 
       - name: Compile Kernel
